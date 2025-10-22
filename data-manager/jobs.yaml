@@ -1,0 +1,771 @@
+---
+kind: DataManagerJobDefinition
+kind-version: '2021.1'
+
+name: Calculate Mordred descriptors
+collection: im-virtual-screening
+
+jobs:
+  descriptor-generator:
+    name: 2D/3D RDKit descriptor calculator
+    description: >-
+      Generate Calculate RDKit descriptors and fingerprints
+    version: '1.0.0'
+    category: comp chem
+    keywords:
+    - rdkit
+    - mordred
+    - descriptors
+    - fingerprints
+    image:
+      name: informaticsmatters/rdkit-descriptors
+      tag: 'latest'
+      project-directory: /data
+      working-directory: /data
+      fix-permissions: true
+    command: >-
+      python /code/rdkit_descriptors.py
+      -i '{{ inputFile }}'
+      -o '{{ outputFile }}'
+      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
+      {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
+      {% if readHeader is defined and readHeader %}--read-header{% endif %}
+      {% if writeHeader is defined and writeHeader %}--write-header{% endif %}
+      {% if readRecords is defined %}--read-records '{{ readRecords }}'{% endif %}
+      {% if separator is defined %}--delimiter '{{ separator }}'{% endif %}
+      {% if interval is defined %}--interval '{{ interval }}'{% endif %}
+      {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
+      {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
+      {% if include3D is defined %}--include-3d{% endif %}
+    variables:
+      order:
+        options:
+        - outputFile
+        - omitFields
+        - idColumn
+        - molColumn
+        - readHeader
+        - writeHeader
+        - separator
+        - readRecords
+        - interval
+        - missingVal
+        - fragmentMethod
+        - include3D
+      inputs:
+        type: object
+        required:
+        - inputFile
+        properties:
+          inputFile:
+            title: Input molecules
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            type: file
+      outputs:
+        type: object
+        properties:
+          outputFile:
+            title: Output file
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            creates: '{{ outputFile }}'
+            type: file
+      options:
+        type: object
+        required:
+        - outputFile
+        properties:
+          outputFile:
+            title: Output file name
+            type: string
+            pattern: "^[A-Za-z0-9_/\\.\\-]+$"
+            default: rdkit_descriptors.smi
+          omitFields:
+            title: Don't include fields from the input in the output
+            type: boolean
+            default: false
+          fragmentMethod:
+            title: Fragment method
+            type: string
+            default: hac
+            enum:
+            - hac
+            - mw
+            - none
+          molColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+            default: 0
+          readHeader:
+            title: Input has header line (text formats only)
+            type: boolean
+          writeHeader:
+            title: Output has header line (text formats only)
+            type: boolean
+            default: true
+          separator:
+            title: Separator for text formats
+            type: string
+            default: tab
+            enum:
+            - tab
+            - comma
+            - space
+            - pipe
+          idColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+          readRecords:
+            title: Number of records to read field names
+            type: integer
+            default: 100
+          interval:
+            title: Reporting interval
+            type: integer
+            default: 1000
+    tests:
+      execution-rdkit:
+        inputs:
+          inputFile: data/10.smi
+        options:
+          outputFile: descriptors-rdkit.smi
+          writeHeader: true
+        checks:
+          exitCode: 0
+          outputs:
+          - name: descriptors-rdkit.smi
+            checks:
+            - exists: true
+            - lineCount: 11
+  rdkfp-generator:
+    name: RDKit Fingerprint calculator
+    description: >-
+      Generate Calculate RDKit fingerprints
+    version: '1.0.0'
+    category: comp chem
+    keywords:
+    - rdkit
+    - fingerprints
+    image:
+      name: informaticsmatters/rdkit-descriptors
+      tag: 'latest'
+      project-directory: /data
+      working-directory: /data
+      fix-permissions: true
+    command: >-
+      python /code/fp_rdkit.py
+      -i '{{ inputFile }}'
+      -o '{{ outputFile }}'
+      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
+      {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
+      {% if readHeader is defined and readHeader %}--read-header{% endif %}
+      {% if writeHeader is defined and writeHeader %}--write-header{% endif %}
+      {% if readRecords is defined %}--read-records '{{ readRecords }}'{% endif %}
+      {% if separator is defined %}--delimiter '{{ separator }}'{% endif %}
+      {% if interval is defined %}--interval '{{ interval }}'{% endif %}
+      {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
+      {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
+      {% if include3D is defined %}--include-3d{% endif %}
+      {% if rdkfpMinPath is defined %}--rdkfp-min-path '{{ rdkfpMinPath }}'{% endif %}
+      {% if rdkfpMaxPath is defined %}--rdkfp-max-path '{{ rdkfpMaxPath }}'{% endif %}
+      {% if rdkfpSize is defined %}--rdkfp-size '{{ rdkfpSize }}'{% endif %}
+      {% if rdkfpBitsPerFeature is defined %}--rdkfp-bits-per-feature '{{ rdkfpBitsPerFeature }}'{% endif %}
+      {% if rdkfpUseHs is defined %}--rdkfp-use-hydrogens{% endif %}
+      {% if rdkfpBranchedPaths is defined %}--rdkfp-branched-paths{% endif %}
+      {% if rdkfpUseBondOrder is defined %}--rdkfp-use-bond-order{% endif %}
+      {% if rdkfpCountSimulation is defined %}--rdkfp-count-simulation{% endif %}
+    variables:
+      order:
+        options:
+        - outputFile
+        - omitFields
+        - idColumn
+        - molColumn
+        - readHeader
+        - writeHeader
+        - separator
+        - readRecords
+        - interval
+        - missingVal
+        - fragmentMethod
+        - include3D
+        - rdkfpMinPath
+        - rdkfpMaxPath
+        - rdkfpSize
+        - rdkfpBitsPerFeature
+        - rdkfpUseHs
+        - rdkfpBranchedPaths
+        - rdkfpUseBondOrder
+        - rdkfpCountSimulation
+      inputs:
+        type: object
+        required:
+        - inputFile
+        properties:
+          inputFile:
+            title: Input molecules
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            type: file
+      outputs:
+        type: object
+        properties:
+          outputFile:
+            title: Output file
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            creates: '{{ outputFile }}'
+            type: file
+      options:
+        type: object
+        required:
+        - outputFile
+        properties:
+          outputFile:
+            title: Output file name
+            type: string
+            pattern: "^[A-Za-z0-9_/\\.\\-]+$"
+            default: rdkit_descriptors.smi
+          omitFields:
+            title: Don't include fields from the input in the output
+            type: boolean
+            default: false
+          fragmentMethod:
+            title: Fragment method
+            type: string
+            default: hac
+            enum:
+            - hac
+            - mw
+            - none
+          molColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+            default: 0
+          readHeader:
+            title: Input has header line (text formats only)
+            type: boolean
+          writeHeader:
+            title: Output has header line (text formats only)
+            type: boolean
+            default: true
+          separator:
+            title: Separator for text formats
+            type: string
+            default: tab
+            enum:
+            - tab
+            - comma
+            - space
+            - pipe
+          idColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+          readRecords:
+            title: Number of records to read field names
+            type: integer
+            default: 100
+          interval:
+            title: Reporting interval
+            type: integer
+            default: 1000
+          rdkfpMinPath:
+            title: Minimum number of bonds to include in the subgraphs
+            type: integer
+            default: 1
+          rdkfpMaxPath:
+            title: Maximum number of bonds to include in the subgraphs
+            type: integer
+            default: 7
+          rdkfpSize:
+            title: Number of bits in the fingerprint
+            type: integer
+            default: 2048
+          rdkfpBitsPerFeature:
+            title: Number of bits to set per path
+            type: integer
+            default: 2
+          rdkfpUseHs:
+            title: Include paths involving Hs in the fingerprint if the molecule has explicit Hs
+            type: boolean
+            default: true
+          rdkfpBranchedPaths:
+            title: If set, both branched and unbranched paths will be used in the fingerprint
+            type: boolean
+            default: true
+          rdkfpUseBondOrder:
+            title: If set, both bond orders will be used in the path hashes
+            type: boolean
+            default: true
+          rdkfpCountSimulation:
+            title: If set, both bond orders will be used in the path hashes
+            type: boolean
+            default: false
+    tests:
+      execution-rdkfp:
+        inputs:
+          inputFile: data/10.smi
+        options:
+          outputFile: descriptors-rdkfp.smi
+          writeHeader: true
+        checks:
+          exitCode: 0
+          outputs:
+          - name: descriptors-rdkfp.smi
+            checks:
+            - exists: true
+            - lineCount: 11
+  morgan-fingerprint-generator:
+    name: Morgan fingerprint calculator
+    description: >-
+      Generate Calculate Morgan fingerprints
+    version: '1.0.0'
+    category: comp chem
+    keywords:
+    - rdkit
+    - descriptors
+    - fingerprints
+    image:
+      name: informaticsmatters/rdkit-descriptors
+      tag: 'latest'
+      project-directory: /data
+      working-directory: /data
+      fix-permissions: true
+    command: >-
+      python /code/fp_morgan.py
+      -i '{{ inputFile }}'
+      -o '{{ outputFile }}'
+      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
+      {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
+      {% if readHeader is defined and readHeader %}--read-header{% endif %}
+      {% if writeHeader is defined and writeHeader %}--write-header{% endif %}
+      {% if readRecords is defined %}--read-records '{{ readRecords }}'{% endif %}
+      {% if separator is defined %}--delimiter '{{ separator }}'{% endif %}
+      {% if interval is defined %}--interval '{{ interval }}'{% endif %}
+      {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
+      {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
+      {% if include3D is defined %}--include-3d{% endif %}
+      {% if morganfpRadius is defined %}--morganfp-radius '{{ morganfpRadius }}'{% endif %}
+      {% if morganfpCountSimulation is defined %}--morganfp-count-simulation{% endif %}
+      {% if morganfpUseChirality is defined %}--morganfp-use-chirality{% endif %}
+      {% if morganfpUseBondTypes is defined %}--morganfp-use-bond-types{% endif %}
+      {% if morganfpOnlyNonzeroInvariants is defined %}--morganfp-only-nonzero-invariants{% endif %}
+      {% if morganfpIncludeRingMembership is defined %}--morganfp-include-ring-membership{% endif %}
+      {% if morganfpCountBonds is defined %}--morganfp-count-bonds{% endif %}
+      {% if morganfpSize is defined %}--morganfp-size '{{ morganfpSize }}'{% endif %}
+      {% if morganfpIncludeRedundandEnvironments is defined %}--morganfp-include-redundandt-environments '{{ interval }}'{% endif %}
+    variables:
+      order:
+        options:
+        - outputFile
+        - omitFields
+        - idColumn
+        - molColumn
+        - readHeader
+        - writeHeader
+        - separator
+        - readRecords
+        - interval
+        - missingVal
+        - fragmentMethod
+        - include3D
+        - morganfpRadius
+        - morganfpCountSimulation
+        - morganfpUseChirality
+        - morganfpUseBondTypes
+        - morganfpOnlyNonzeroInvariants
+        - morganfpIncludeRingMembership
+        - morganfpCountBonds
+        - morganfpSize
+        - morganfpIncludeRedundandEnvironments
+      inputs:
+        type: object
+        required:
+        - inputFile
+        properties:
+          inputFile:
+            title: Input molecules
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            type: file
+      outputs:
+        type: object
+        properties:
+          outputFile:
+            title: Output file
+            mime-types:
+            - chemical/x-mdl-sdfile
+            - squonk/x-smiles
+            creates: '{{ outputFile }}'
+            type: file
+      options:
+        type: object
+        required:
+        - outputFile
+        properties:
+          outputFile:
+            title: Output file name
+            type: string
+            pattern: "^[A-Za-z0-9_/\\.\\-]+$"
+            default: rdkit_descriptors.smi
+          omitFields:
+            title: Don't include fields from the input in the output
+            type: boolean
+            default: false
+          fragmentMethod:
+            title: Fragment method
+            type: string
+            default: hac
+            enum:
+            - hac
+            - mw
+            - none
+          molColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+            default: 0
+          readHeader:
+            title: Input has header line (text formats only)
+            type: boolean
+          writeHeader:
+            title: Output has header line (text formats only)
+            type: boolean
+            default: true
+          separator:
+            title: Separator for text formats
+            type: string
+            default: tab
+            enum:
+            - tab
+            - comma
+            - space
+            - pipe
+          idColumn:
+            title: Index (text) or name (SDF) to use for the ID field
+            type: string
+            pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+          readRecords:
+            title: Number of records to read field names
+            type: integer
+            default: 100
+          interval:
+            title: Reporting interval
+            type: integer
+            default: 1000
+          morganfpRadius:
+            title: Minimum number of bonds to include in the subgraphs
+            type: integer
+            default: 3
+          morganfpCountSimulation:
+            title: If set, use count simulation while generating the fingerprint
+            type: boolean
+            default: false
+          morganfpUseChirality:
+            title: If set, chirality information will be added to the generated fingerprint
+            type: boolean
+            default: false
+          morganfpUseBondTypes:
+            title: If set, bond types will be included as a part of the default bond invariants
+            type: boolean
+            default: true
+          morganfpOnlyNonzeroInvariants:
+            title: Only nonzero invariants
+            type: boolean
+            default: false
+          morganfpIncludeRingMembership:
+            title: Include ring membership
+            type: boolean
+            default: true
+          morganfpCountBonds:
+            title: Count bonds
+            type: boolean
+            default: false
+          morganfpSize:
+            title: Size of the generated fingerprint
+            type: integer
+            default: 2048
+          morganfpIncludeRedundandEnvironments:
+            title: Include redundant environments in the fingerprint
+            type: boolean
+            default: false
+    tests:
+      execution-morgan:
+        inputs:
+          inputFile: data/10.smi
+        options:
+          outputFile: descriptors-morgan.smi
+          writeHeader: true
+        checks:
+          exitCode: 0
+          outputs:
+          - name: descriptors-morgan.smi
+            checks:
+            - exists: true
+            - lineCount: 11
+  # descriptor-generator:
+  #   name: 2D/3D RDKit descriptor calculator
+  #   description: >-
+  #     Generate Calculate RDKit descriptors and fingerprints
+  #   version: '1.0.0'
+  #   category: comp chem
+  #   keywords:
+  #   - rdkit
+  #   - mordred
+  #   - descriptors
+  #   - fingerprints
+  #   image:
+  #     name: informaticsmatters/rdkit-descriptors
+  #     tag: 'latest'
+  #     project-directory: /data
+  #     working-directory: /data
+  #     fix-permissions: true
+  #   command: >-
+  #     python /code/descriptor_generator.py
+  #     -i '{{ inputFile }}'
+  #     -o '{{ outputFile }}'
+  #     {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+  #     {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
+  #     {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
+  #     {% if readHeader is defined and readHeader %}--read-header{% endif %}
+  #     {% if writeHeader is defined and writeHeader %}--write-header{% endif %}
+  #     {% if readRecords is defined %}--read-records '{{ readRecords }}'{% endif %}
+  #     {% if separator is defined %}--delimiter '{{ separator }}'{% endif %}
+  #     {% if interval is defined %}--interval '{{ interval }}'{% endif %}
+  #     {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
+  #     {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
+  #     {% if include3D is defined %}--include-3d{% endif %}
+  #     {% if calculateRDFP is defined %}--rdkfp-calc-rdkfp{% endif %}
+  #     {% if rdkfpMinPath is defined %}--rdkfp-min-path '{{ rdkfpMinPath }}'{% endif %}
+  #     {% if rdkfpMaxPath is defined %}--rdkfp-max-path '{{ rdkfpMaxPath }}'{% endif %}
+  #     {% if rdkfpSize is defined %}--rdkfp-size '{{ rdkfpSize }}'{% endif %}
+  #     {% if rdkfpBitsPerFeature is defined %}--rdkfp-bits-per-feature '{{ rdkfpBitsPerFeature }}'{% endif %}
+  #     {% if rdkfpUseHs is defined %}--rdkfp-use-hydrogens{% endif %}
+  #     {% if rdkfpBranchedPaths is defined %}--rdkfp-branched-paths{% endif %}
+  #     {% if rdkfpUseBondOrder is defined %}--rdkfp-use-bond-order{% endif %}
+  #     {% if rdkfpCountSimulation is defined %}--rdkfp-count-simulation{% endif %}
+  #     {% if calcMorganFP is defined %}--morganfp-calc-morganfp{% endif %}
+  #     {% if morganfpRadius is defined %}--morganfp-radius '{{ morganfpRadius }}'{% endif %}
+  #     {% if morganfpCountSimulation is defined %}--morganfp-count-simulation{% endif %}
+  #     {% if morganfpUseChirality is defined %}--morganfp-use-chirality{% endif %}
+  #     {% if morganfpUseBondTypes is defined %}--morganfp-use-bond-types{% endif %}
+  #     {% if morganfpOnlyNonzeroInvariants is defined %}--morganfp-only-nonzero-invariants{% endif %}
+  #     {% if morganfpIncludeRingMembership is defined %}--morganfp-include-ring-membership{% endif %}
+  #     {% if morganfpCountBonds is defined %}--morganfp-count-bonds{% endif %}
+  #     {% if morganfpSize is defined %}--morganfp-size '{{ morganfpSize }}'{% endif %}
+  #     {% if morganfpIncludeRedundandEnvironments is defined %}--morganfp-include-redundandt-environments '{{ interval }}'{% endif %}
+  #   variables:
+  #     order:
+  #       options:
+  #       - outputFile
+  #       - omitFields
+  #       - idColumn
+  #       - molColumn
+  #       - readHeader
+  #       - writeHeader
+  #       - separator
+  #       - readRecords
+  #       - interval
+  #       - missingVal
+  #       - fragmentMethod
+  #       - include3D
+  #       - calculateRDFP
+  #       - rdkfpMinPath
+  #       - rdkfpMaxPath
+  #       - rdkfpSize
+  #       - rdkfpBitsPerFeature
+  #       - rdkfpUseHs
+  #       - rdkfpBranchedPaths
+  #       - rdkfpUseBondOrder
+  #       - rdkfpCountSimulation
+  #       - calcMorganFP
+  #       - morganfpRadius
+  #       - morganfpCountSimulation
+  #       - morganfpUseChirality
+  #       - morganfpUseBondTypes
+  #       - morganfpOnlyNonzeroInvariants
+  #       - morganfpIncludeRingMembership
+  #       - morganfpCountBonds
+  #       - morganfpSize
+  #       - morganfpIncludeRedundandEnvironments
+  #     inputs:
+  #       type: object
+  #       required:
+  #       - inputFile
+  #       properties:
+  #         inputFile:
+  #           title: Input molecules
+  #           mime-types:
+  #           - chemical/x-mdl-sdfile
+  #           - squonk/x-smiles
+  #           type: file
+  #     outputs:
+  #       type: object
+  #       properties:
+  #         outputFile:
+  #           title: Output file
+  #           mime-types:
+  #           - chemical/x-mdl-sdfile
+  #           - squonk/x-smiles
+  #           creates: '{{ outputFile }}'
+  #           type: file
+  #     options:
+  #       type: object
+  #       required:
+  #       - outputFile
+  #       properties:
+  #         outputFile:
+  #           title: Output file name
+  #           type: string
+  #           pattern: "^[A-Za-z0-9_/\\.\\-]+$"
+  #           default: rdkit_descriptors.smi
+  #         omitFields:
+  #           title: Don't include fields from the input in the output
+  #           type: boolean
+  #           default: false
+  #         fragmentMethod:
+  #           title: Fragment method
+  #           type: string
+  #           default: hac
+  #           enum:
+  #           - hac
+  #           - mw
+  #           - none
+  #         molColumn:
+  #           title: Index (text) or name (SDF) to use for the ID field
+  #           type: string
+  #           pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+  #           default: 0
+  #         readHeader:
+  #           title: Input has header line (text formats only)
+  #           type: boolean
+  #         writeHeader:
+  #           title: Output has header line (text formats only)
+  #           type: boolean
+  #           default: true
+  #         separator:
+  #           title: Separator for text formats
+  #           type: string
+  #           default: tab
+  #           enum:
+  #           - tab
+  #           - comma
+  #           - space
+  #           - pipe
+  #         idColumn:
+  #           title: Index (text) or name (SDF) to use for the ID field
+  #           type: string
+  #           pattern: "^[A-Za-z0-9_\\.\\- ]+$"
+  #         readRecords:
+  #           title: Number of records to read field names
+  #           type: integer
+  #           default: 100
+  #         interval:
+  #           title: Reporting interval
+  #           type: integer
+  #           default: 1000
+  #         calculateRDFP:
+  #           title: Calculate RDKFingerprint
+  #           type: boolean
+  #           default: false
+  #         rdkfpMinPath:
+  #           title: Minimum number of bonds to include in the subgraphs
+  #           type: integer
+  #           default: 1
+  #         rdkfpMaxPath:
+  #           title: Maximum number of bonds to include in the subgraphs
+  #           type: integer
+  #           default: 7
+  #         rdkfpSize:
+  #           title: Number of bits in the fingerprint
+  #           type: integer
+  #           default: 2048
+  #         rdkfpBitsPerFeature:
+  #           title: Number of bits to set per path
+  #           type: integer
+  #           default: 2
+  #         rdkfpUseHs:
+  #           title: Include paths involving Hs in the fingerprint if the molecule has explicit Hs
+  #           type: boolean
+  #           default: true
+  #         rdkfpBranchedPaths:
+  #           title: If set, both branched and unbranched paths will be used in the fingerprint
+  #           type: boolean
+  #           default: true
+  #         rdkfpUseBondOrder:
+  #           title: If set, both bond orders will be used in the path hashes
+  #           type: boolean
+  #           default: true
+  #         rdkfpCountSimulation:
+  #           title: If set, both bond orders will be used in the path hashes
+  #           type: boolean
+  #           default: false
+  #         calcMorganFP:
+  #           title: Calculate Morgan fingerprint
+  #           type: boolean
+  #           default: false
+  #         morganfpRadius:
+  #           title: Minimum number of bonds to include in the subgraphs
+  #           type: integer
+  #           default: 3
+  #         morganfpCountSimulation:
+  #           title: If set, use count simulation while generating the fingerprint
+  #           type: boolean
+  #           default: false
+  #         morganfpUseChirality:
+  #           title: If set, chirality information will be added to the generated fingerprint
+  #           type: boolean
+  #           default: false
+  #         morganfpUseBondTypes:
+  #           title: If set, bond types will be included as a part of the default bond invariants
+  #           type: boolean
+  #           default: true
+  #         morganfpOnlyNonzeroInvariants:
+  #           title: Only nonzero invariants
+  #           type: boolean
+  #           default: false
+  #         morganfpIncludeRingMembership:
+  #           title: Include ring membership
+  #           type: boolean
+  #           default: true
+  #         morganfpCountBonds:
+  #           title: Count bonds
+  #           type: boolean
+  #           default: false
+  #         morganfpSize:
+  #           title: Size of the generated fingerprint
+  #           type: integer
+  #           default: 2048
+  #         morganfpIncludeRedundandEnvironments:
+  #           title: Include redundant environments in the fingerprint
+  #           type: boolean
+  #           default: false
+  #   tests:
+  #     execution-2d:
+  #       inputs:
+  #         inputFile: data/10.smi
+  #       options:
+  #         outputFile: descriptors2d.smi
+  #         writeHeader: true
+  #         calcMorganFP: true
+  #         calculateRDFP: true
+  #       checks:
+  #         exitCode: 0
+  #         outputs:
+  #         - name: descriptors2d.smi
+  #           checks:
+  #           - exists: true
+  #           - lineCount: 11
