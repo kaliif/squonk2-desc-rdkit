@@ -15,6 +15,7 @@
 
 # Generates rdkit descriptors for molecules.
 
+import argparse
 import sys
 import time
 from abc import ABC
@@ -668,86 +669,87 @@ class AbstractCalculator(ABC):
 # #     main()
 
 
-# def get_base_parser():
+def get_base_parser():
 
-#     # Run using conda env created from environment-im-mordred.yaml
-#     #   or docker environment created from Dockerfile-mordred
+    # Run using conda env created from environment-im-mordred.yaml
+    #   or docker environment created from Dockerfile-mordred
 
-#     # Examples:
-#     #   python -m im_mordred.descriptor_generator -i data/10.smi -o descriptors.smi -d tab
-#     #   python -m im_mordred.descriptor_generator -i data/10+H.smi -o descriptors.smi -d tab --id_column 1 --read-header --writeheader
-#     # python src/descriptor_generator.py -i data/10.smi -o descriptors.smi -d tab --write-header --rdkfp-calc-rdkfp --morganfp-calc-morganfp
+    # Examples:
+    #   python -m im_mordred.descriptor_generator -i data/10.smi -o descriptors.smi -d tab
+    #   python -m im_mordred.descriptor_generator -i data/10+H.smi -o descriptors.smi -d tab --id_column 1 --read-header --writeheader
+    # python src/descriptor_generator.py -i data/10.smi -o descriptors.smi -d tab --write-header --rdkfp-calc-rdkfp --morganfp-calc-morganfp
 
-#     # ----- command line args definitions ---------------------------------------------
+    # ----- command line args definitions ---------------------------------------------
 
-#     parser = argparse.ArgumentParser(description="Mordred 2D descriptors")
-#     input_group = parser.add_argument_group("Input/output options")
-#     input_group.add_argument(
-#         "-i", "--input", required=True, help="Input file (.smi or .sdf)"
-#     )
-#     input_group.add_argument(
-#         "-o", "--output", default="descriptors2d.smi", help="Output file (.smi or .sdf"
-#     )
-#     input_group.add_argument(
-#         "--omit-fields",
-#         action="store_true",
-#         help="Don't include fields from the input in the output",
-#     )
+    parser = argparse.ArgumentParser(description="Mordred 2D descriptors")
+    input_group = parser.add_argument_group("Input/output options")
+    input_group.add_argument(
+        "-i", "--input", required=True, help="Input file (.smi or .sdf)"
+    )
+    input_group.add_argument(
+        "-o", "--output", default="descriptors2d.smi", help="Output file (.smi or .sdf"
+    )
+    input_group.add_argument(
+        "--omit-fields",
+        action="store_true",
+        help="Don't include fields from the input in the output",
+    )
 
-#     # to pass tab as the delimiter specify it as $'\t' or use one of
-#     # the symbolic names 'comma', 'tab', 'space' or 'pipe'
-#     input_group.add_argument("-d", "--delimiter", help="Delimiter when using SMILES")
-#     input_group.add_argument(
-#         "--id-column",
-#         help="Column for name field (zero based integer for .smi, text for SDF)",
-#     )
-#     input_group.add_argument(
-#         "--mol-column",
-#         type=int,
-#         default=0,
-#         help="Column index for molecule when using delineated text formats (zero based integer)",
-#     )
-#     input_group.add_argument(
-#         "--read-header",
-#         action="store_true",
-#         help="Read a header line with the field names when reading .smi or .txt",
-#     )
-#     input_group.add_argument(
-#         "--write-header",
-#         action="store_true",
-#         help="Write a header line when writing .smi or .txt",
-#     )
-#     input_group.add_argument(
-#         "--read-records",
-#         default=100,
-#         type=int,
-#         help="Read this many records to determine the fields that are present",
-#     )
-#     input_group.add_argument(
-#         "--interval", default=1000, type=int, help="Reporting interval"
-#     )
+    # to pass tab as the delimiter specify it as $'\t' or use one of
+    # the symbolic names 'comma', 'tab', 'space' or 'pipe'
+    input_group.add_argument("-d", "--delimiter", help="Delimiter when using SMILES")
+    input_group.add_argument(
+        "--id-column",
+        help="Column for name field (zero based integer for .smi, text for SDF)",
+    )
+    input_group.add_argument(
+        "--mol-column",
+        type=int,
+        default=0,
+        help="Column index for molecule when using delineated text formats (zero based integer)",
+    )
+    input_group.add_argument(
+        "--read-header",
+        action="store_true",
+        help="Read a header line with the field names when reading .smi or .txt",
+    )
+    input_group.add_argument(
+        "--write-header",
+        action="store_true",
+        help="Write a header line when writing .smi or .txt",
+    )
+    input_group.add_argument(
+        "--read-records",
+        default=100,
+        type=int,
+        help="Read this many records to determine the fields that are present",
+    )
+    input_group.add_argument(
+        "--interval", default=1000, type=int, help="Reporting interval"
+    )
 
-#     rdkit_generic_group = parser.add_argument_group("General RDKit options")
-#     rdkit_generic_group.add_argument(
-#         "--missing-val",
-#         default=None,
-#         help="Missing value",
-#     )
-#     rdkit_generic_group.add_argument(
-#         "--fragment-method",
-#         choices=["hac", "mw", "none"],
-#         default="hac",
-#         help="Strategy for picking largest fragment (mw or hac or none",
-#     )
+    rdkit_generic_group = parser.add_argument_group("General RDKit options")
+    rdkit_generic_group.add_argument(
+        "--missing-val",
+        default=None,
+        help="Missing value",
+    )
+    rdkit_generic_group.add_argument(
+        "--fragment-method",
+        choices=["hac", "mw", "none"],
+        default="hac",
+        help="Strategy for picking largest fragment (mw or hac or none",
+    )
 
-#     rdkit_generic_group.add_argument(
-#         "--include-3d",
-#         action="store_true",
-#         help="Include 3D descriptors (requires 3D molecules in SDF file)",
-#     )
+    rdkit_generic_group.add_argument(
+        "--include-3d",
+        action="store_true",
+        help="Include 3D descriptors (requires 3D molecules in SDF file)",
+    )
+
+    return parser
 
 
-#     return parser
 #     # delimiter = utils.read_delimiter(args.delimiter)
 
 
