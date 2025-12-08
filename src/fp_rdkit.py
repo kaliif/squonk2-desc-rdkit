@@ -34,9 +34,9 @@ def main():
     parser = get_base_parser()
 
     rdkfp_group = parser.add_argument_group("RDKFingerprint options")
-    rdkfp_group.add_argument(
-        "--rdkfp-calc-rdkfp", action="store_true", help="Calculate RDKFingerprint"
-    )
+    # rdkfp_group.add_argument(
+    #     "--rdkfp-calc-rdkfp", action="store_true", help="Calculate RDKFingerprint"
+    # )
     rdkfp_group.add_argument(
         "--rdkfp-min-path",
         default=1,
