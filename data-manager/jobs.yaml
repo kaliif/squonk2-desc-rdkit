@@ -528,7 +528,7 @@ jobs:
   #   - descriptors
   #   - fingerprints
   #   image:
-  #     name: kaliif/rdkit-descriptors
+  #     name: kaliif/rdkit-descriptosr
   #     tag: 'latest'
   #     project-directory: /data
   #     working-directory: /data
