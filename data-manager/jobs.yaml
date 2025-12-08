@@ -162,7 +162,7 @@ jobs:
       python /code/fp_rdkit.py
       -i '{{ inputFile }}'
       -o '{{ outputFile }}'
-      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if omitFields is defined %}--omit-fields{% endif %}
       {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
       {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
       {% if readHeader is defined and readHeader %}--read-header{% endif %}
@@ -319,6 +319,22 @@ jobs:
         options:
           outputFile: descriptors-rdkfp.smi
           writeHeader: true
+          idColumn: 0
+          molColumn: 0
+          readRecords: 4
+          separator: tab
+          interval: 3
+          missingVal: None
+          fragmentMethod: hac
+          rdkfpMinPath: 1
+          rdkfpMaxPath: 7
+          rdkfpSize: 2048
+          rdkfpBitsPerFeature: 2
+          rdkfpUseHs: false
+          rdkfpBranchedPaths: false
+          rdkfpUseBondOrder: false
+          rdkfpCountSimulation: false
+          readHeader: false
         checks:
           exitCode: 0
           outputs:
