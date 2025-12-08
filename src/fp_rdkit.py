@@ -134,6 +134,10 @@ def main():
             "RDKFingerprint",
         ]
 
+        def calculate(self, *args):
+            result = self.calculator(*args)
+            return (result.ToBitString(),)
+
     calc = RDFPCalculator(args)
     calc.run()
 
