@@ -24,10 +24,10 @@ jobs:
       working-directory: /data
       fix-permissions: true
     command: >-
-      python /code/rdkit_descriptors.py
+      /code/rdkit_descriptors.py
       -i '{{ inputFile }}'
       -o '{{ outputFile }}'
-      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if omitFields is defined %}--omit-fields{% endif %}
       {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
       {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
       {% if readHeader is defined and readHeader %}--read-header{% endif %}
@@ -159,7 +159,7 @@ jobs:
       working-directory: /data
       fix-permissions: true
     command: >-
-      python /code/fp_rdkit.py
+      /code/fp_rdkit.py
       -i '{{ inputFile }}'
       -o '{{ outputFile }}'
       {% if omitFields is defined %}--omit-fields{% endif %}
@@ -359,10 +359,10 @@ jobs:
       working-directory: /data
       fix-permissions: true
     command: >-
-      python /code/fp_morgan.py
+      /code/fp_morgan.py
       -i '{{ inputFile }}'
       -o '{{ outputFile }}'
-      {% if omitFields is defined %}--omit-fields '{{ omitFields }}'{% endif %}
+      {% if omitFields is defined %}--omit-fields{% endif %}
       {% if idColumn is defined %}--id-column '{{ idColumn }}'{% endif %}
       {% if molColumn is defined %}--mol-column '{{ molColumn }}'{% endif %}
       {% if readHeader is defined and readHeader %}--read-header{% endif %}

@@ -55,6 +55,11 @@ class AbstractCalculator(ABC):
         if not hasattr(cls, "descriptor_names"):
             raise TypeError(f"{cls.__name__} must define 'descriptor_names'")
 
+    # override if post-processing necessary (like ToBitString() with
+    # fingerprints)
+    def calculate(self, *args):
+        return self.calculator(*args)
+
     def run(
         self,
         # filename,
@@ -187,7 +192,7 @@ class AbstractCalculator(ABC):
                     cann_smi = Chem.MolToSmiles(biggest)
 
                 # this is now the calculator defined in child classes
-                values = self.calculator(biggest)
+                values = self.calculate(biggest)
 
             except KeyboardInterrupt:
                 utils.log("Interrupted")

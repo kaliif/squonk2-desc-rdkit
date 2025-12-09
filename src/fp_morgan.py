@@ -34,11 +34,11 @@ def main():
     parser = get_base_parser()
 
     morganfp_group = parser.add_argument_group("Morgan fingerprint options")
-    morganfp_group.add_argument(
-        "--morganfp-calc-morganfp",
-        action="store_true",
-        help="Calculate Morgan Fingerprint",
-    )
+    # morganfp_group.add_argument(
+    #     "--morganfp-calc-morganfp",
+    #     action="store_true",
+    #     help="Calculate Morgan Fingerprint",
+    # )
     morganfp_group.add_argument(
         "--morganfp-radius",
         default=3,
@@ -110,6 +110,10 @@ def main():
         descriptor_names = [
             "MorganFingerprint",
         ]
+
+        def calculate(self, *args):
+            result = self.calculator(*args)
+            return (result.ToBitString(),)
 
     calc = MorganFPCalculator(args)
     calc.run()
