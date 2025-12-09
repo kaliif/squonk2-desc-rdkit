@@ -381,7 +381,7 @@ jobs:
       {% if morganfpIncludeRingMembership is defined %}--morganfp-include-ring-membership{% endif %}
       {% if morganfpCountBonds is defined %}--morganfp-count-bonds{% endif %}
       {% if morganfpSize is defined %}--morganfp-size '{{ morganfpSize }}'{% endif %}
-      {% if morganfpIncludeRedundandEnvironments is defined %}--morganfp-include-redundandt-environments '{{ interval }}'{% endif %}
+      {% if morganfpIncludeRedundandEnvironments is defined %}--morganfp-include-redundandt-environments{% endif %}
     variables:
       order:
         options:
