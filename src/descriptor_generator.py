@@ -37,7 +37,8 @@ class AbstractCalculator(ABC):
         self.filename = arguments.input
         self.outfile = arguments.output
         self.mode = arguments.fragment_method
-        self.include_3d = arguments.include_3d
+        # self.include_3d = arguments.include_3d
+        self.include_3d = False
         self.omit_fields = arguments.omit_fields
         self.id_column = arguments.id_column
         self.mol_column = arguments.mol_column
@@ -746,11 +747,11 @@ def get_base_parser():
         help="Strategy for picking largest fragment (mw or hac or none",
     )
 
-    rdkit_generic_group.add_argument(
-        "--include-3d",
-        action="store_true",
-        help="Include 3D descriptors (requires 3D molecules in SDF file)",
-    )
+    # rdkit_generic_group.add_argument(
+    #     "--include-3d",
+    #     action="store_true",
+    #     help="Include 3D descriptors (requires 3D molecules in SDF file)",
+    # )
 
     return parser
 

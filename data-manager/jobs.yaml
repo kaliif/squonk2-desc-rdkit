@@ -7,7 +7,7 @@ collection: im-virtual-screening
 
 jobs:
   descriptor-generator:
-    name: 2D/3D RDKit descriptor calculator
+    name: 2D RDKit descriptor calculator
     description: >-
       Generate Calculate RDKit descriptors and fingerprints
     version: '1.0.0'
@@ -37,7 +37,7 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      {% if include3D is defined %}--include-3d{% endif %}
+      # {% if include3D is defined %}--include-3d{% endif %}
     variables:
       order:
         options:
@@ -52,7 +52,7 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        - include3D
+        # - include3D
       inputs:
         type: object
         required:
@@ -172,7 +172,7 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      {% if include3D is defined %}--include-3d{% endif %}
+      # {% if include3D is defined %}--include-3d{% endif %}
       {% if rdkfpMinPath is defined %}--rdkfp-min-path '{{ rdkfpMinPath }}'{% endif %}
       {% if rdkfpMaxPath is defined %}--rdkfp-max-path '{{ rdkfpMaxPath }}'{% endif %}
       {% if rdkfpSize is defined %}--rdkfp-size '{{ rdkfpSize }}'{% endif %}
@@ -195,7 +195,7 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        - include3D
+        # - include3D
         - rdkfpMinPath
         - rdkfpMaxPath
         - rdkfpSize
@@ -234,7 +234,7 @@ jobs:
             title: Output file name
             type: string
             pattern: "^[A-Za-z0-9_/\\.\\-]+$"
-            default: rdkit_descriptors.smi
+            default: rdkit_fingerprints.smi
           omitFields:
             title: Don't include fields from the input in the output
             type: boolean
@@ -372,7 +372,7 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      {% if include3D is defined %}--include-3d{% endif %}
+      # {% if include3D is defined %}--include-3d{% endif %}
       {% if morganfpRadius is defined %}--morganfp-radius '{{ morganfpRadius }}'{% endif %}
       {% if morganfpCountSimulation is defined %}--morganfp-count-simulation{% endif %}
       {% if morganfpUseChirality is defined %}--morganfp-use-chirality{% endif %}
@@ -396,7 +396,7 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        - include3D
+        # - include3D
         - morganfpRadius
         - morganfpCountSimulation
         - morganfpUseChirality
@@ -436,7 +436,7 @@ jobs:
             title: Output file name
             type: string
             pattern: "^[A-Za-z0-9_/\\.\\-]+$"
-            default: rdkit_descriptors.smi
+            default: morgan_fingerprints.smi
           omitFields:
             title: Don't include fields from the input in the output
             type: boolean
