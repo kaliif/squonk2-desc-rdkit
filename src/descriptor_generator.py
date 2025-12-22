@@ -386,8 +386,6 @@ class AbstractCalculator(ABC):
 #     #   or docker environment created from Dockerfile-mordred
 
 #     # Examples:
-#     #   python -m im_mordred.descriptor_generator -i data/10.smi -o descriptors.smi -d tab
-#     #   python -m im_mordred.descriptor_generator -i data/10+H.smi -o descriptors.smi -d tab --id_column 1 --read-header --writeheader
 #     # python src/descriptor_generator.py -i data/10.smi -o descriptors.smi -d tab --write-header --rdkfp-calc-rdkfp --morganfp-calc-morganfp
 
 #     # ----- command line args definitions ---------------------------------------------
@@ -681,13 +679,11 @@ def get_base_parser():
     #   or docker environment created from Dockerfile-mordred
 
     # Examples:
-    #   python -m im_mordred.descriptor_generator -i data/10.smi -o descriptors.smi -d tab
-    #   python -m im_mordred.descriptor_generator -i data/10+H.smi -o descriptors.smi -d tab --id_column 1 --read-header --writeheader
     # python src/descriptor_generator.py -i data/10.smi -o descriptors.smi -d tab --write-header --rdkfp-calc-rdkfp --morganfp-calc-morganfp
 
     # ----- command line args definitions ---------------------------------------------
 
-    parser = argparse.ArgumentParser(description="Mordred 2D descriptors")
+    parser = argparse.ArgumentParser(description="RDkit 2D descriptors")
     input_group = parser.add_argument_group("Input/output options")
     input_group.add_argument(
         "-i", "--input", required=True, help="Input file (.smi or .sdf)"

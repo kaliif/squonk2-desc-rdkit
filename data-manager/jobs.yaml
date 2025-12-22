@@ -2,7 +2,7 @@
 kind: DataManagerJobDefinition
 kind-version: '2021.1'
 
-name: Calculate Mordred descriptors
+name: Calculate RDkit descriptors
 collection: im-virtual-screening
 
 jobs:
@@ -14,7 +14,6 @@ jobs:
     category: comp chem
     keywords:
     - rdkit
-    - mordred
     - descriptors
     - fingerprints
     image:
