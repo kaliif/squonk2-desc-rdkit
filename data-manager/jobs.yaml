@@ -36,7 +36,6 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      # {% if include3D is defined %}--include-3d{% endif %}
     variables:
       order:
         options:
@@ -51,7 +50,6 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        # - include3D
       inputs:
         type: object
         required:
@@ -171,7 +169,6 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      # {% if include3D is defined %}--include-3d{% endif %}
       {% if rdkfpMinPath is defined %}--rdkfp-min-path '{{ rdkfpMinPath }}'{% endif %}
       {% if rdkfpMaxPath is defined %}--rdkfp-max-path '{{ rdkfpMaxPath }}'{% endif %}
       {% if rdkfpSize is defined %}--rdkfp-size '{{ rdkfpSize }}'{% endif %}
@@ -194,7 +191,6 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        # - include3D
         - rdkfpMinPath
         - rdkfpMaxPath
         - rdkfpSize
@@ -371,7 +367,6 @@ jobs:
       {% if interval is defined %}--interval '{{ interval }}'{% endif %}
       {% if missingVal is defined %}--missing-val '{{ missingVal }}'{% endif %}
       {% if fragmentMethod is defined %}--fragment-method '{{ fragmentMethod }}'{% endif %}
-      # {% if include3D is defined %}--include-3d{% endif %}
       {% if morganfpRadius is defined %}--morganfp-radius '{{ morganfpRadius }}'{% endif %}
       {% if morganfpCountSimulation is defined %}--morganfp-count-simulation{% endif %}
       {% if morganfpUseChirality is defined %}--morganfp-use-chirality{% endif %}
@@ -395,7 +390,6 @@ jobs:
         - interval
         - missingVal
         - fragmentMethod
-        # - include3D
         - morganfpRadius
         - morganfpCountSimulation
         - morganfpUseChirality
