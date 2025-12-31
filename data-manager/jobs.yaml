@@ -84,7 +84,6 @@ jobs:
           omitFields:
             title: Don't include fields from the input in the output
             type: boolean
-            default: false
           fragmentMethod:
             title: Fragment method
             type: string
